@@ -78,6 +78,10 @@ Google 实现的 C 语言版的 word2vec 是目前公认的准确率最高的 wo
 简单说明一下：  
 `TEXT_DATA` 为训练文本文件路径，词之间使用空格分隔；`VECTOR_DATA` 为输出的模型文件；不使用 cbow 模型，默认为 Skip-Gram 模型；每个单词的向量维度是 200；训练的窗口大小为 5；不使用 NEG 方法，使用 HS 方法；`-sampe` 指的是采样的阈值，如果一个词语在训练样本中出现的频率越大，那么就越会被采样；`-binary` 为 1 指的是结果二进制存储，为 0 是普通存储。
 
+### 3. 维基百科中文语料库(已分好词)
+
+- [`wiki_chinese_preprocessed.simplied.txt`](https://pan.baidu.com/s/1dFgIbTZ)（1GB）
+
 ## 参考
 
 - [word2vec使用指导](http://blog.csdn.net/zhoubl668/article/details/24314769)
