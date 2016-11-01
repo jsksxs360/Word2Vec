@@ -2,6 +2,10 @@
 
 [Word2VEC_java](https://github.com/NLPchina/Word2VEC_java) 是[孙健](http://www.nlpcn.org/)（ansj）编写的一个谷歌 word2vec 的 java 实现版本，同时支持读取由谷歌 c 语言版 [word2vec](https://github.com/svn2github/word2vec) 训练产生的模型。Word2Vec 则是对其的进一步包装，同时实现了常用的词语相似度和句子相似度计算。
 
+### 下载
+
+[Word2Vec.jar](https://github.com/jsksxs360/Word2Vec/releases/tag/1.0)
+
 ## 如何使用
 
 ```java
