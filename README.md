@@ -4,7 +4,7 @@
 
 ### 下载
 
-[Word2Vec.jar](https://github.com/jsksxs360/Word2Vec/releases/tag/1.0)
+[Word2Vec.jar](https://github.com/jsksxs360/Word2Vec/releases/)
 
 ## 如何使用
 
