@@ -14,7 +14,6 @@ Word2Vec vec = new Word2Vec();
 try {
 	vec.loadGoogleModel("data/wiki_chinese_word2vec(Google).model");
 } catch (IOException e) {
-	// TODO Auto-generated catch block
 	e.printStackTrace();
 }
 System.out.println(vec.wordSimilarity("狗", "猫"));
