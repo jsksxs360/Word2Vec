@@ -4,41 +4,41 @@
 
 ### 下载
 
-[Word2Vec.jar](https://github.com/jsksxs360/Word2Vec/releases/)
+- [Word2Vec.jar](https://github.com/jsksxs360/Word2Vec/releases/)
+- [维基百科中文语料(测试使用)](#3-维基百科中文语料已分好词)
 
 ## 如何使用
 
 ```java
 Word2Vec vec = new Word2Vec();
 try {
-	vec.loadGoogleModel("data/review.model");
+	vec.loadGoogleModel("data/wiki_chinese_word2vec(Google).model");
 } catch (IOException e) {
+	// TODO Auto-generated catch block
 	e.printStackTrace();
 }
-
 System.out.println(vec.wordSimilarity("狗", "猫"));
-System.out.println(vec.wordSimilarity("计算机", "硬盘"));
+System.out.println(vec.wordSimilarity("计算机", "电脑"));
 System.out.println(vec.wordSimilarity("计算机", "人"));
-
-String s1 = "张家港 最近 汽车 行驶 非常 缓慢 因为 有 多条 公路 正在 施工";
-String s2 = "张家港 最近 交通 拥堵 部分 道路 难以 通行";
-String s3 = "张家港 水 污染 很 严重";
+	
+String s1 = "苏州 有 多条 公路 正在 施工 造成 局部 地区 汽车 行驶 非常 缓慢";
+String s2 = "苏州 最近 有 多条 公路 在 施工 导致 部分 地区 交通 拥堵 汽车 难以 通行";
+String s3 = "苏州 是 一座 美丽 的 城市 四季 分明 雨量 充沛";
 System.out.println(vec.sentenceSimilairy(s1, s1));
 System.out.println(vec.sentenceSimilairy(s1, s2));
 System.out.println(vec.sentenceSimilairy(s1, s3));
-}
 ```
 
 输出结果：
 
 ```java
-0.7751967 //"狗"和"猫"的相似度
-0.40951487 //"计算机"和"硬盘"的相似度
--0.13773794 //"计算机"和"人"的相似度
+0.71021223 //"狗"和"猫"的相似度
+0.64130974 //"计算机"和"硬盘"的相似度
+0.060623944 //"计算机"和"人"的相似度
 
 1.0
-0.873214
-0.74950576
+0.8946862
+0.6880989
 ```
 
 **注意：**加载不同的 word2vec 模型，计算相似度的结果也不同。
@@ -82,10 +82,15 @@ Google 实现的 C 语言版的 word2vec 是目前公认的准确率最高的 wo
 简单说明一下：  
 `TEXT_DATA` 为训练文本文件路径，词之间使用空格分隔；`VECTOR_DATA` 为输出的模型文件；不使用 cbow 模型，默认为 Skip-Gram 模型；每个单词的向量维度是 200；训练的窗口大小为 5；不使用 NEG 方法，使用 HS 方法；`-sampe` 指的是采样的阈值，如果一个词语在训练样本中出现的频率越大，那么就越会被采样；`-binary` 为 1 指的是结果二进制存储，为 0 是普通存储。
 
-### 3. 维基百科中文语料库(已分好词)
+### 3. 维基百科中文语料(已分好词)
 
 - [`wiki_chinese_preprocessed.simplied.txt`](https://pan.baidu.com/s/1dFgIbTZ)（1GB）
+
+对应训练出的 Google 版模型：
+
+- [`wiki_chinese_word2vec(Google).model`](https://pan.baidu.com/s/1kUD0jzh)(516.4MB)
 
 ## 参考
 
 - [word2vec使用指导](http://blog.csdn.net/zhoubl668/article/details/24314769)
+- [word2vec原理推导与代码分析](http://www.hankcs.com/nlp/word2vec.html)
