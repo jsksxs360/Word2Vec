@@ -3,13 +3,17 @@ package me.xiaosheng.word2vec;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.ansj.vec.Learn;
 import com.ansj.vec.Word2VEC;
+import com.ansj.vec.domain.WordEntry;
 
 public class Word2Vec {
 
@@ -50,6 +54,19 @@ public class Word2Vec {
 		return vec.getWordVector(word);
 	}
 	/**
+	 * 计算向量内积
+	 * @param vec1
+	 * @param vec2
+	 * @return
+	 */
+	private float calDist(float[] vec1, float[] vec2) {
+		float dist = 0;
+		for (int i = 0; i < vec1.length; i++) {
+			dist += vec1[i] * vec2[i];
+		}
+		return dist;
+	}
+	/**
 	 * 计算词相似度
 	 * @param word1
 	 * @param word2
@@ -64,11 +81,41 @@ public class Word2Vec {
 		if(word1Vec == null || word2Vec == null) {
 			return -1;
 		}
-		float dist = 0;
-		for (int i = 0; i < word1Vec.length; i++) {
-			dist += word1Vec[i] * word2Vec[i];
+		return calDist(word1Vec, word2Vec);
+	}
+	/**
+	 * 获取相似词语
+	 * @param word
+	 * @param maxReturnNum
+	 * @return
+	 */
+	public Set<WordEntry> getSimilarWords(String word, int maxReturnNum) {
+		if (loadModel == false)
+			return null;
+		float[] center = getWordVector(word);
+		if (center == null) {
+			return Collections.emptySet();
 		}
-		return dist;
+		int resultSize = vec.getWords() < maxReturnNum ? vec.getWords() : maxReturnNum;
+		TreeSet<WordEntry> result = new TreeSet<WordEntry>();
+		double min = Double.MIN_VALUE;
+		for (Map.Entry<String, float[]> entry : vec.getWordMap().entrySet()) {
+			float[] vector = entry.getValue();
+			float dist = calDist(center, vector);
+			if (result.size() <= resultSize) {
+				result.add(new WordEntry(entry.getKey(), dist));
+				min = result.last().score;
+			} else {
+				if (dist > min) {
+					result.add(new WordEntry(entry.getKey(), dist));
+					result.pollLast();
+					min = result.last().score;
+				}
+			}
+		}
+		result.pollFirst();
+
+		return result;
 	}
 	/**
 	 * 计算句子相似度
