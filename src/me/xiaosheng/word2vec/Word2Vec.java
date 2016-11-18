@@ -43,6 +43,19 @@ public class Word2Vec {
 		loadModel = false;
 	}
 	/**
+	 * 训练Java版Word2Vec模型
+	 * @param trainFilePath 训练文件路径
+	 * @param modelFilePath 模型文件路径
+	 * @throws IOException
+	 */
+	public static void trainJavaModel(String trainFilePath, String modelFilePath) throws IOException {
+		Learn learn = new Learn();
+	    long start = System.currentTimeMillis();
+	    learn.learnFile(new File(trainFilePath));
+	    System.out.println("use time " + (System.currentTimeMillis() - start));
+	    learn.saveModel(new File(modelFilePath));
+	}
+	/**
 	 * 获得词向量
 	 * @param word
 	 * @return
@@ -114,22 +127,40 @@ public class Word2Vec {
 			}
 		}
 		result.pollFirst();
-
 		return result;
 	}
 	/**
-	 * 计算句子相似度
-	 * @param sentence1
-	 * @param sentence2
+	 * 计算词语与词语列表中所有词语的最大相似度
+	 * (最小返回0)
+	 * @param centerWord 词语
+	 * @param wordList 词语列表
 	 * @return
 	 */
-	public float sentenceSimilairy(String sentence1, String sentence2) {
+	private float calMaxSimilarity(String centerWord, List<String> wordList) {
+		float max = 0;
+		if (wordList.contains(centerWord)) {
+			return 1;
+		} else {
+			for (String word : wordList) {
+				float temp = wordSimilarity(centerWord, word);
+				if (temp > max) {
+					max = temp;
+				}
+			}
+		}
+		return max;
+	}
+	/**
+	 * 计算句子相似度
+	 * @param sentence1Words 句子1词语列表
+	 * @param sentence2Words 句子2词语列表
+	 * @return
+	 */
+	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
 		if (loadModel == false) {
 			return -1;
 		}
-		List<String> sentence1Words = Arrays.asList(sentence1.split(" "));
-		List<String> sentence2Words = Arrays.asList(sentence2.split(" "));
-		if (sentence1Words.size() == 0 || sentence2Words.size() == 0) {
+		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
 			return -1;
 		}
 		Set<String> wordSet = new HashSet<String>();
@@ -143,34 +174,12 @@ public class Word2Vec {
 		float[] vector1 = new float[allWordList.size()];
 		for (int i = 0; i < vector1.length; i++) {
 			String center = allWordList.get(i);
-			if (sentence1Words.contains(center)) {
-				vector1[i] = 1;
-			} else {
-				float score = 0;
-				for (int j = 0; j < sentence1Words.size(); j++) {
-					float tmp = wordSimilarity(center, sentence1Words.get(j));
-					if (tmp > score) {
-						score = tmp;
-					}
-				}
-				vector1[i] = score;
-			}
+			vector1[i] = calMaxSimilarity(center, sentence1Words);
 		}
 		float[] vector2 = new float[allWordList.size()];
 		for (int i = 0; i < vector2.length; i++) {
 			String center = allWordList.get(i);
-			if (sentence2Words.contains(center)) {
-				vector2[i] = 1;
-			} else {
-				float score = 0;
-				for (int j = 0; j < sentence2Words.size(); j++) {
-					float tmp = wordSimilarity(center, sentence2Words.get(j));
-					if (tmp > score) {
-						score = tmp;
-					}
-				}
-				vector2[i] = score;
-			}
+			vector2[i] = calMaxSimilarity(center, sentence2Words);
 		}
 		float dist = 0;
 		for (int i = 0; i < vector1.length; i++) {
@@ -187,16 +196,82 @@ public class Word2Vec {
 		return dist / (vec1module * vec2module);
 	}
 	/**
-	 * 训练Java版Word2Vec模型
-	 * @param trainFilePath 训练文件路径
-	 * @param modelFilePath 模型文件路径
-	 * @throws IOException
+	 * 简易计算句子相似度
+	 * 所有词语权值设为1
+	 * @param sentence1Words 句子1词语列表
+	 * @param sentence2Words 句子2词语列表
+	 * @return
+	 * @throws Exception 词语列表和权值向量长度不同
 	 */
-	public static void trainJavaModel(String trainFilePath, String modelFilePath) throws IOException {
-		Learn learn = new Learn();
-	    long start = System.currentTimeMillis();
-	    learn.learnFile(new File(trainFilePath));
-	    System.out.println("use time " + (System.currentTimeMillis() - start));
-	    learn.saveModel(new File(modelFilePath));
+	public float easySentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) throws Exception {
+		if (loadModel == false) {
+			return -1;
+		}
+		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
+			return -1;
+		}
+		float[] vector1 = new float[sentence1Words.size()];
+		float[] vector2 = new float[sentence2Words.size()];
+		for (int i = 0; i < vector1.length; i++) {
+			vector1[i] = calMaxSimilarity(sentence1Words.get(i), sentence2Words);
+		}
+		for (int i = 0; i < vector2.length; i++) {
+			vector2[i] = calMaxSimilarity(sentence2Words.get(i), sentence1Words);
+		}
+		float sum1 = 0;
+		for (int i = 0; i < vector1.length; i++) {
+			sum1 += vector1[i];
+		}
+		float sum2 = 0;
+		for (int i = 0; i < vector2.length; i++) {
+			sum2 += vector2[i];
+		}
+		return (sum1 + sum2) / (sentence1Words.size() + sentence2Words.size());
+	}
+	/**
+	 * 计算句子相似度(带权值)
+	 * 每一个词语都有一个对应的权值
+	 * @param sentence1Words 句子1词语列表
+	 * @param sentence2Words 句子2词语列表
+	 * @param weightVector1 句子1权值向量
+	 * @param weightVector2 句子2权值向量
+	 * @return
+	 * @throws Exception 词语列表和权值向量长度不同
+	 */
+	public float easySentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words, float[] weightVector1, float[] weightVector2) throws Exception {
+		if (loadModel == false) {
+			return -1;
+		}
+		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
+			return -1;
+		}
+		if (sentence1Words.size() != weightVector1.length || sentence2Words.size() != weightVector2.length) {
+			throw new Exception("length of word list and weight vector is different");
+		}
+		float[] vector1 = new float[sentence1Words.size()];
+		float[] vector2 = new float[sentence2Words.size()];
+		for (int i = 0; i < vector1.length; i++) {
+			vector1[i] = calMaxSimilarity(sentence1Words.get(i), sentence2Words);
+		}
+		for (int i = 0; i < vector2.length; i++) {
+			vector2[i] = calMaxSimilarity(sentence2Words.get(i), sentence1Words);
+		}
+		float sum1 = 0;
+		for (int i = 0; i < vector1.length; i++) {
+			sum1 += vector1[i] * weightVector1[i];
+		}
+		float sum2 = 0;
+		for (int i = 0; i < vector2.length; i++) {
+			sum2 += vector2[i] * weightVector2[i];
+		}
+		float divide1 = 0;
+		for (int i = 0; i < weightVector1.length; i++) {
+			divide1 += weightVector1[i];
+		}
+		float divide2 = 0;
+		for (int j = 0; j < weightVector2.length; j++) {
+			divide2 += weightVector2[j];
+		}
+		return (sum1 + sum2) / (divide1 + divide2);
 	}
 }
