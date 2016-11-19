@@ -43,9 +43,9 @@ for(WordEntry word : similarWords) {
 
 ### 3. 计算句子的语义相似度:
 
-Word2Vec 目前提供了两种计算句子相似度的方法，`sentenceSimilarity()` 和 `easySentenceSimilarity()`。它们的输入都是分好词的句子，即句子的词语列表。
+Word2Vec 目前提供了两种计算句子相似度的方法，`sentenceSimilarity()` 和 `easySentenceSimilarity()`。它们的输入都是分好词的句子，即句子的词语列表。其中 `easySentenceSimilarity()` 还支持对词语赋予不同的权值(默认权值相同为1)。
 
-为了方便测试，Word2Vec 对 [HanLP](https://github.com/hankcs/HanLP) 便携版进行了包装，提供了一个简易的分词工具类 `Segment`，可以方便地获取分词后的词语列表和词性列表。由于 HanLP 便携版分词能力有限，在实际使用中，建议使用自己的分词工具。
+为了方便测试，Word2Vec 对 [HanLP](https://github.com/hankcs/HanLP) 便携版进行了包装，提供了一个简易的分词工具类 `Segment`，用来获取分词后的词语列表和词性列表。由于 HanLP 便携版分词能力有限，在实际使用中，建议使用自己的分词工具(比如[HanLP标准版](https://github.com/hankcs/HanLP)、[斯坦福NLP](http://stanfordnlp.github.io/CoreNLP/)、[哈工大语言技术平台](https://github.com/HIT-SCIR/ltp)、[中科院分词系统](http://ictclas.nlpir.org/)等)。
 
 ```java
 String s1 = "苏州有多条公路正在施工，造成局部地区汽车行驶非常缓慢。";
