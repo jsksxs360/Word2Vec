@@ -11,7 +11,7 @@
 
 ### 1. 新建 Word2Vec 对象，加载模型:
 
-Word2Vec 同时支持加载谷歌模型和 Java 模型，分别使用 `loadGoogleModel()` 和 `loadJavaModel()` 函数读取。关于如何训练模型，请见[**训练 word2vec 模型**](#训练-word2vec-模型)。
+Word2Vec 同时支持加载谷歌模型和 Java 模型，分别使用 `loadGoogleModel()` 和 `loadJavaModel()` 函数读取。关于如何训练模型，请见[训练 word2vec 模型](#训练-word2vec-模型)。
 
 ```java
 Word2Vec vec = new Word2Vec();
