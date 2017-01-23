@@ -196,10 +196,9 @@ public class Word2Vec {
 	 * 所有词语权值设为1
 	 * @param sentence1Words 句子1词语列表
 	 * @param sentence2Words 句子2词语列表
-	 * @return
-	 * @throws Exception 词语列表和权值向量长度不同
+	 * @return 两个句子的相似度
 	 */
-	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) throws Exception {
+	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
 		if (loadModel == false) {
 			return -1;
 		}
@@ -231,7 +230,7 @@ public class Word2Vec {
 	 * @param sentence2Words 句子2词语列表
 	 * @param weightVector1 句子1权值向量
 	 * @param weightVector2 句子2权值向量
-	 * @return
+	 * @return 两个句子的相似度
 	 * @throws Exception 词语列表和权值向量长度不同
 	 */
 	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words, float[] weightVector1, float[] weightVector2) throws Exception {
