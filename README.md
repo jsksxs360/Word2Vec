@@ -61,52 +61,46 @@ for(WordEntry word : similarWords) {
 
 ### 3. 计算句子的语义相似度:
 
-Word2Vec 目前提供了两种计算句子相似度的方法，`sentenceSimilarity()` 和 `easySentenceSimilarity()`。它们的输入都是分好词的句子，即句子的词语列表。其中 `easySentenceSimilarity()` 还支持对词语赋予不同的权值(默认权值相同为1)。
+Word2Vec 还提供了计算句子相似度的方法 `sentenceSimilarity()`，输入是两个分好词的句子(即两个词语列表)，还支持自定义每个词语在相似度计算中的权值(默认所有词语权值为1)。
 
-为了方便测试，Word2Vec 对 [HanLP](https://github.com/hankcs/HanLP) 便携版进行了包装，提供了一个简易的分词工具类 `Segment`，用来获取分词后的词语列表和词性列表。由于 HanLP 便携版分词能力有限，在实际使用中，建议使用自己的分词工具(比如 [HanLP标准版](https://github.com/hankcs/HanLP)、[斯坦福NLP](http://stanfordnlp.github.io/CoreNLP/)、[哈工大语言技术平台](https://github.com/HIT-SCIR/ltp)、[中科院分词系统](http://ictclas.nlpir.org/) 等)。
+为了方便测试，Word2Vec 对 [Ansj中文分词](https://github.com/NLPchina/ansj_seg) 进行了包装，提供了一个简易的分词工具类 `Segment`，用来获取分词后的词语列表和词性列表。在实际使用中，也可以使用自己的分词工具(比如 [Ansj中文分词](https://github.com/NLPchina/ansj_seg)、[斯坦福NLP](http://stanfordnlp.github.io/CoreNLP/)、[哈工大语言技术平台](https://github.com/HIT-SCIR/ltp)、[中科院分词系统](http://ictclas.nlpir.org/)、[HanLP](https://github.com/hankcs/HanLP) 等)。
 
 ```java
 String s1 = "苏州有多条公路正在施工，造成局部地区汽车行驶非常缓慢。";
 String s2 = "苏州最近有多条公路在施工，导致部分地区交通拥堵，汽车难以通行。";
 String s3 = "苏州是一座美丽的城市，四季分明，雨量充沛。";
-//分词，去停用词
-Segment seg1 = new Segment(s1, true);
-Segment seg2 = new Segment(s2, true);
-Segment seg3 = new Segment(s3, true);
 
-//标准句子相似度
-System.out.println(vec.sentenceSimilarity(seg1.getWords(), seg1.getWords()));
-System.out.println(vec.sentenceSimilarity(seg1.getWords(), seg2.getWords()));
-System.out.println(vec.sentenceSimilarity(seg1.getWords(), seg3.getWords()));
+//分词，获取词语列表
+List<String> wordList1 = Segment.getWords(s1);
+List<String> wordList2 = Segment.getWords(s2);
+List<String> wordList3 = Segment.getWords(s3);
 
-//简易句子相似度
-System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg1.getWords()));
-System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg2.getWords()));
-System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg3.getWords()));
+//句子相似度(所有词语权值设为1)
+System.out.println("s1|s1: " + vec.sentenceSimilarity(wordList1, wordList1));
+System.out.println("s1|s2: " + vec.sentenceSimilarity(wordList1, wordList2));
+System.out.println("s1|s3: " + vec.sentenceSimilarity(wordList1, wordList3));
 
-//简易句子相似度(名词、动词权值设为1，其他设为0.8)
-System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg1.getWords(), seg1.getPOSWeightVector(), seg1.getPOSWeightVector()));
-System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg2.getWords(), seg1.getPOSWeightVector(), seg2.getPOSWeightVector()));
-System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg3.getWords(), seg1.getPOSWeightVector(), seg3.getPOSWeightVector()));
+//句子相似度(名词、动词权值设为1，其他设为0.8)
+float[] weightArray1 = Segment.getPOSWeightArray(Segment.getPOS(s1));
+float[] weightArray2 = Segment.getPOSWeightArray(Segment.getPOS(s2));
+float[] weightArray3 = Segment.getPOSWeightArray(Segment.getPOS(s3));
+System.out.println("s1|s1: " + vec.sentenceSimilarity(wordList1, wordList1, weightArray1, weightArray1));
+System.out.println("s1|s2: " + vec.sentenceSimilarity(wordList1, wordList2, weightArray1, weightArray2));
+System.out.println("s1|s3: " + vec.sentenceSimilarity(wordList1, wordList3, weightArray1, weightArray3));
 ```
 
 #### 输出结果：
 
 ```java
-//标准句子相似度
-1.0
-0.88231444
-0.6493894
-
-//简易句子相似度
-1.0
-0.7413265
-0.41655433
-
-//简易句子相似度(名词、动词权值设为1，其他设为0.8)
-1.0
-0.74916583
-0.41593283
+//句子相似度:
+s1|s1: 1.0
+s1|s2: 0.7888574
+s1|s3: 0.4520114
+  
+//句子相似度(名词、动词权值设为1，其他设为0.8):
+s1|s1: 1.0
+s1|s2: 0.7922064
+s1|s3: 0.45209178
 ```
 
 **注意：**加载不同的 word2vec 模型，计算相似度的结果也不同。
