@@ -1,65 +1,66 @@
 package me.xiaosheng.util;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.hankcs.hanlp.*;
-import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
-import com.hankcs.hanlp.seg.common.Term;
+import org.ansj.domain.Term;
+import org.ansj.recognition.impl.FilterRecognition;
+import org.ansj.splitWord.analysis.ToAnalysis;
 
 public class Segment {
 
-	private List<Term> termList;
 	/**
-	 * 分词器构造函数
-	 * @param sentence 要分词的句子
-	 * @param enableStopWordFilter 是否过滤停用词
+	 * 分词
+	 * @param sentence 待分词的句子
+	 * @return 分词结果
 	 */
-	public Segment(String sentence, boolean enableStopWordFilter) {
-		termList = HanLP.segment(sentence);
-		if (enableStopWordFilter) {
-			CoreStopWordDictionary.apply(termList);
-		}
+	public static List<Term> Seg(String sentence) {
+		FilterRecognition filter = new FilterRecognition();
+		//过滤标点符号
+		filter.insertStopWord(",", " ", ".", "，", "。", ":", "：", "'", "‘", "’", "　", "“", "”", "《", "》", "[", "]", "-");
+		return ToAnalysis.parse(sentence).recognition(filter).getTerms();
 	}
 	/**
 	 * 获取词语列表
-	 * @return
+	 * @param sentence 待分词的句子
+	 * @return 分词后的词语列表
 	 */
-	public List<String> getWords() {
-		List<String> wordList = new LinkedList<String>();
+	public static List<String> getWords(String sentence) {
+		List<Term> termList = Seg(sentence);
+		List<String> wordList = new ArrayList<String>();
 		for (Term wordTerm : termList) {
-			wordList.add(wordTerm.word);
+			wordList.add(wordTerm.getName());
 		}
 		return wordList;
 	}
 	/**
 	 * 获取词性列表
-	 * @return
+	 * @param sentence 待分词的句子
+	 * @return 分词后的词性列表
 	 */
-	public List<String> getPOS() {
-		List<String> POSList = new LinkedList<String>();
+	public static List<String> getPOS(String sentence) {
+		List<Term> termList = Seg(sentence);
+		List<String> natureList = new ArrayList<String>();
 		for (Term wordTerm : termList) {
-			POSList.add(wordTerm.nature.toString());
+			natureList.add(wordTerm.getNatureStr());
 		}
-		return POSList;
+		return natureList;
 	}
-	
-	public float[] getPOSWeightVector() {
-		float[] weightVector = new float[termList.size()];
+	/**
+	 * 获取词性权值数组
+	 * @param posList 词性列表
+	 * @return 词性列表对应的权值数组
+	 */
+	public static float[] getPOSWeightArray(List<String> posList) {
+		float[] weightVector = new float[posList.size()];
 		for (int i = 0; i < weightVector.length; i++) {
-			String POS = termList.get(i).nature.toString();
-			if (POS.charAt(0) == 'n') {
-				weightVector[i] = 1;
-			} else if (POS.charAt(0) == 'v') {
-				weightVector[i] = 1;
-			} else {
-				weightVector[i] = (float) 0.8;
+			String POS = posList.get(i);
+			switch(POS.charAt(0)) {
+			case 'n':
+			case 'v':weightVector[i] = 1;break;
+			default:weightVector[i] = (float) 0.8;break;
 			}
 		}
 		return weightVector;
-	}
-	@Override
-	public String toString() {
-		return termList.toString();
 	}
 }

@@ -1,6 +1,7 @@
 package me.xiaosheng.word2vec;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import com.ansj.vec.domain.WordEntry;
@@ -23,7 +24,7 @@ public class Test {
 		System.out.println("计算机|人: " + vec.wordSimilarity("计算机", "人"));
 		//获取相似的词语
 		Set<WordEntry> similarWords = vec.getSimilarWords("漂亮", 10);
-		System.out.println("与 [ 漂亮 ] 语义相似的词语:");
+		System.out.println("与 [漂亮] 语义相似的词语:");
 		for(WordEntry word : similarWords) {
 			System.out.println(word.name + " : " + word.score);
 		}
@@ -35,22 +36,23 @@ public class Test {
 		System.out.println("s1: " + s1);
 		System.out.println("s2: " + s2);
 		System.out.println("s3: " + s3);
-		//分词，去停用词
-		Segment seg1 = new Segment(s1, true);
-		Segment seg2 = new Segment(s2, true);
-		Segment seg3 = new Segment(s3, true);
-		//标准句子相似度
-		System.out.println(vec.sentenceSimilarity(seg1.getWords(), seg1.getWords()));
-		System.out.println(vec.sentenceSimilarity(seg1.getWords(), seg2.getWords()));
-		System.out.println(vec.sentenceSimilarity(seg1.getWords(), seg3.getWords()));
-		//简易句子相似度
-		System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg1.getWords()));
-		System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg2.getWords()));
-		System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg3.getWords()));
-		//简易句子相似度(名词、动词权值设为1，其他设为0.8)
-		System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg1.getWords(), seg1.getPOSWeightVector(), seg1.getPOSWeightVector()));
-		System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg2.getWords(), seg1.getPOSWeightVector(), seg2.getPOSWeightVector()));
-		System.out.println(vec.easySentenceSimilarity(seg1.getWords(), seg3.getWords(), seg1.getPOSWeightVector(), seg3.getPOSWeightVector()));
+		//分词，获取词语列表
+		List<String> wordList1 = Segment.getWords(s1);
+		List<String> wordList2 = Segment.getWords(s2);
+		List<String> wordList3 = Segment.getWords(s3);
+		//句子相似度(所有词语权值设为1)
+		System.out.println("句子相似度:");
+		System.out.println("s1|s1: " + vec.sentenceSimilarity(wordList1, wordList1));
+		System.out.println("s1|s2: " + vec.sentenceSimilarity(wordList1, wordList2));
+		System.out.println("s1|s3: " + vec.sentenceSimilarity(wordList1, wordList3));
+		//句子相似度(名词、动词权值设为1，其他设为0.8)
+		System.out.println("句子相似度(名词、动词权值设为1，其他设为0.8):");
+		float[] weightArray1 = Segment.getPOSWeightArray(Segment.getPOS(s1));
+		float[] weightArray2 = Segment.getPOSWeightArray(Segment.getPOS(s2));
+		float[] weightArray3 = Segment.getPOSWeightArray(Segment.getPOS(s3));
+		System.out.println("s1|s1: " + vec.sentenceSimilarity(wordList1, wordList1, weightArray1, weightArray1));
+		System.out.println("s1|s2: " + vec.sentenceSimilarity(wordList1, wordList2, weightArray1, weightArray2));
+		System.out.println("s1|s3: " + vec.sentenceSimilarity(wordList1, wordList3, weightArray1, weightArray3));
 //		try {
 //			Word2Vec.trainJavaModel("data/train.txt", "data/test.model");
 //		} catch (IOException e) {

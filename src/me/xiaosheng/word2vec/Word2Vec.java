@@ -3,8 +3,6 @@ package me.xiaosheng.word2vec;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,7 +134,7 @@ public class Word2Vec {
 	 * @return
 	 */
 	private float calMaxSimilarity(String centerWord, List<String> wordList) {
-		float max = 0;
+		float max = 0; //最小返回0
 		if (wordList.contains(centerWord)) {
 			return 1;
 		} else {
@@ -149,60 +147,59 @@ public class Word2Vec {
 		}
 		return max;
 	}
+//	/**
+//	 * 计算句子相似度
+//	 * @param sentence1Words 句子1词语列表
+//	 * @param sentence2Words 句子2词语列表
+//	 * @return
+//	 */
+//	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
+//		if (loadModel == false) {
+//			return -1;
+//		}
+//		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
+//			return -1;
+//		}
+//		Set<String> wordSet = new HashSet<String>();
+//		for (String word : sentence1Words) {
+//			wordSet.add(word);
+//		}
+//		for (String word : sentence2Words) {
+//			wordSet.add(word);
+//		}
+//		List<String> allWordList = new LinkedList<String>(wordSet);
+//		float[] vector1 = new float[allWordList.size()];
+//		for (int i = 0; i < vector1.length; i++) {
+//			String center = allWordList.get(i);
+//			vector1[i] = calMaxSimilarity(center, sentence1Words);
+//		}
+//		float[] vector2 = new float[allWordList.size()];
+//		for (int i = 0; i < vector2.length; i++) {
+//			String center = allWordList.get(i);
+//			vector2[i] = calMaxSimilarity(center, sentence2Words);
+//		}
+//		float dist = 0;
+//		for (int i = 0; i < vector1.length; i++) {
+//			dist += vector1[i] * vector2[i];
+//		}
+//		float vec1module = 0;
+//		float vec2module = 0;
+//		for (int i = 0; i < vector1.length; i++) {
+//			vec1module += vector1[i] * vector1[i];
+//			vec2module += vector2[i] * vector2[i];
+//		}
+//		//return dist / (float) Math.sqrt(vec1module * vec2module);
+//		return dist / ((float) Math.sqrt(vec1module) * (float) Math.sqrt(vec2module));
+//	}
 	/**
 	 * 计算句子相似度
-	 * @param sentence1Words 句子1词语列表
-	 * @param sentence2Words 句子2词语列表
-	 * @return
-	 */
-	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
-		if (loadModel == false) {
-			return -1;
-		}
-		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
-			return -1;
-		}
-		Set<String> wordSet = new HashSet<String>();
-		for (String word : sentence1Words) {
-			wordSet.add(word);
-		}
-		for (String word : sentence2Words) {
-			wordSet.add(word);
-		}
-		List<String> allWordList = new LinkedList<String>(wordSet);
-		float[] vector1 = new float[allWordList.size()];
-		for (int i = 0; i < vector1.length; i++) {
-			String center = allWordList.get(i);
-			vector1[i] = calMaxSimilarity(center, sentence1Words);
-		}
-		float[] vector2 = new float[allWordList.size()];
-		for (int i = 0; i < vector2.length; i++) {
-			String center = allWordList.get(i);
-			vector2[i] = calMaxSimilarity(center, sentence2Words);
-		}
-		float dist = 0;
-		for (int i = 0; i < vector1.length; i++) {
-			dist += vector1[i] * vector2[i];
-		}
-		float vec1module = 0;
-		float vec2module = 0;
-		for (int i = 0; i < vector1.length; i++) {
-			vec1module += vector1[i] * vector1[i];
-			vec2module += vector2[i] * vector2[i];
-		}
-		vec1module = (float) Math.sqrt(vec1module);
-		vec2module = (float) Math.sqrt(vec2module);
-		return dist / (vec1module * vec2module);
-	}
-	/**
-	 * 简易计算句子相似度
 	 * 所有词语权值设为1
 	 * @param sentence1Words 句子1词语列表
 	 * @param sentence2Words 句子2词语列表
 	 * @return
 	 * @throws Exception 词语列表和权值向量长度不同
 	 */
-	public float easySentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) throws Exception {
+	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) throws Exception {
 		if (loadModel == false) {
 			return -1;
 		}
@@ -237,7 +234,7 @@ public class Word2Vec {
 	 * @return
 	 * @throws Exception 词语列表和权值向量长度不同
 	 */
-	public float easySentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words, float[] weightVector1, float[] weightVector2) throws Exception {
+	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words, float[] weightVector1, float[] weightVector2) throws Exception {
 		if (loadModel == false) {
 			return -1;
 		}
