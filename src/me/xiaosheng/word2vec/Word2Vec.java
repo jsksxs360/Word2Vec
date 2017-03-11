@@ -84,12 +84,12 @@ public class Word2Vec {
 	 */
 	public float wordSimilarity(String word1, String word2) {
 		if (loadModel == false) {
-			return -1;
+			return 0;
 		}
 		float[] word1Vec = getWordVector(word1);
 		float[] word2Vec = getWordVector(word2);
 		if(word1Vec == null || word2Vec == null) {
-			return -1;
+			return 0;
 		}
 		return calDist(word1Vec, word2Vec);
 	}
@@ -134,63 +134,21 @@ public class Word2Vec {
 	 * @return
 	 */
 	private float calMaxSimilarity(String centerWord, List<String> wordList) {
-		float max = 0; //最小返回0
+		float max = -1;
 		if (wordList.contains(centerWord)) {
 			return 1;
 		} else {
 			for (String word : wordList) {
 				float temp = wordSimilarity(centerWord, word);
+				if (temp == 0) continue;
 				if (temp > max) {
 					max = temp;
 				}
 			}
 		}
+		if (max == -1) return 0;
 		return max;
 	}
-//	/**
-//	 * 计算句子相似度
-//	 * @param sentence1Words 句子1词语列表
-//	 * @param sentence2Words 句子2词语列表
-//	 * @return
-//	 */
-//	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
-//		if (loadModel == false) {
-//			return -1;
-//		}
-//		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
-//			return -1;
-//		}
-//		Set<String> wordSet = new HashSet<String>();
-//		for (String word : sentence1Words) {
-//			wordSet.add(word);
-//		}
-//		for (String word : sentence2Words) {
-//			wordSet.add(word);
-//		}
-//		List<String> allWordList = new LinkedList<String>(wordSet);
-//		float[] vector1 = new float[allWordList.size()];
-//		for (int i = 0; i < vector1.length; i++) {
-//			String center = allWordList.get(i);
-//			vector1[i] = calMaxSimilarity(center, sentence1Words);
-//		}
-//		float[] vector2 = new float[allWordList.size()];
-//		for (int i = 0; i < vector2.length; i++) {
-//			String center = allWordList.get(i);
-//			vector2[i] = calMaxSimilarity(center, sentence2Words);
-//		}
-//		float dist = 0;
-//		for (int i = 0; i < vector1.length; i++) {
-//			dist += vector1[i] * vector2[i];
-//		}
-//		float vec1module = 0;
-//		float vec2module = 0;
-//		for (int i = 0; i < vector1.length; i++) {
-//			vec1module += vector1[i] * vector1[i];
-//			vec2module += vector2[i] * vector2[i];
-//		}
-//		//return dist / (float) Math.sqrt(vec1module * vec2module);
-//		return dist / ((float) Math.sqrt(vec1module) * (float) Math.sqrt(vec2module));
-//	}
 	/**
 	 * 计算句子相似度
 	 * 所有词语权值设为1
@@ -200,10 +158,10 @@ public class Word2Vec {
 	 */
 	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
 		if (loadModel == false) {
-			return -1;
+			return 0;
 		}
 		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
-			return -1;
+			return 0;
 		}
 		float[] vector1 = new float[sentence1Words.size()];
 		float[] vector2 = new float[sentence2Words.size()];
@@ -235,10 +193,10 @@ public class Word2Vec {
 	 */
 	public float sentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words, float[] weightVector1, float[] weightVector2) throws Exception {
 		if (loadModel == false) {
-			return -1;
+			return 0;
 		}
 		if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
-			return -1;
+			return 0;
 		}
 		if (sentence1Words.size() != weightVector1.length || sentence2Words.size() != weightVector2.length) {
 			throw new Exception("length of word list and weight vector is different");
