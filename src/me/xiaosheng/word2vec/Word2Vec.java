@@ -37,7 +37,7 @@ public class Word2Vec {
 	 */
 	public void loadJavaModel(String modelPath) throws IOException {
 		vec.loadJavaModel(modelPath);
-		loadModel = false;
+		loadModel = true;
 	}
 	/**
 	 * 训练Java版Word2Vec模型
