@@ -152,6 +152,8 @@ Google 实现的 C 语言版的 word2vec 是目前公认的准确率最高的 wo
 
 - [`wiki_chinese_word2vec(Google).model`](https://pan.baidu.com/s/1kUD0jzh)(516.4MB)
 
+如果想对最新的维基百科中文语料进行处理，可以参考[《维基百科中文语料库词向量的训练》](http://xiaosheng.me/2017/05/26/article63/)。
+
 ## 参考
 
 - [word2vec使用指导](http://blog.csdn.net/zhoubl668/article/details/24314769)
