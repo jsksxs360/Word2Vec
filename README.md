@@ -152,6 +152,7 @@ Google 实现的 C 语言版的 word2vec 是目前公认的准确率最高的 wo
 
 - [`wiki_chinese_word2vec(Google).model`](https://pan.baidu.com/s/1kUD0jzh)(516.4MB)
 
+如果想对最新的维基百科中文语料进行处理，可以参考[《维基百科中文语料库词向量的训练》](http://xiaosheng.me/2017/05/26/article63/)。
 ### 4. Python 版本 
 
 Word2Vec 也提供了 Python 的实现版本（需要安装 [gensim](https://radimrehurek.com/gensim/) 依赖包），只需下载  [Word2Vec.py](https://github.com/jsksxs360/Word2Vec/tree/master/python/Word2Vec.py)，然后 `from Word2Vec import Word2Vec` 引入项目即可：
