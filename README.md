@@ -103,7 +103,7 @@ s1|s2: 0.7922064
 s1|s3: 0.45209178
 ```
 
-**注意：**加载不同的 word2vec 模型，计算相似度的结果也不同。
+**注意：** 加载不同的 word2vec 模型，计算相似度的结果也不同。
 
 ## 训练 word2vec 模型
 
@@ -151,6 +151,22 @@ Google 实现的 C 语言版的 word2vec 是目前公认的准确率最高的 wo
 对应训练出的 Google 版模型：
 
 - [`wiki_chinese_word2vec(Google).model`](https://pan.baidu.com/s/1kUD0jzh)(516.4MB)
+
+### 4. Python 版本 
+
+Word2Vec 也提供了 Python 的实现版本（需要安装 [gensim](https://radimrehurek.com/gensim/) 依赖包），只需下载  [Word2Vec.py](https://github.com/jsksxs360/Word2Vec/tree/master/python/Word2Vec.py)，然后 `from Word2Vec import Word2Vec` 引入项目即可：
+
+```python
+from Word2Vec import Word2Vec
+
+w2v = Word2Vec('/Users/jim/Desktop/wiki_chinese_word2vec.model', kind='bin')
+
+print('狗|猫: ', w2v.word_similarity('狗', '猫'))
+print('计算机|电脑: ', w2v.word_similarity('计算机', '电脑'))
+print('计算机|人: ', w2v.word_similarity('计算机', '人'))
+```
+
+详细示例可以参见 [test.py](https://github.com/jsksxs360/Word2Vec/tree/master/python/test.py)。
 
 ## 参考
 
