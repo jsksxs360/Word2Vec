@@ -61,7 +61,7 @@ for(WordEntry word : similarWords) {
 
 ### 3. 计算句子的语义相似度:
 
-Word2Vec 还提供了计算句子相似度的方法 `sentenceSimilarity()`，输入是两个分好词的句子(即两个词语列表)，还支持自定义每个词语在相似度计算中的权值(默认所有词语权值为1)。
+Word2Vec 还提供了计算句子相似度的方法 `fastSentenceSimilarity()` 和 `sentenceSimilarity()`，输入是两个分好词的句子(即两个词语列表)，还支持自定义每个词语在相似度计算中的权值(默认所有词语权值为1)。
 
 为了方便测试，Word2Vec 对 [Ansj中文分词](https://github.com/NLPchina/ansj_seg) 进行了包装，提供了一个简易的分词工具类 `Segment`，用来获取分词后的词语列表和词性列表。在实际使用中，也可以使用自己的分词工具(比如 [Ansj中文分词](https://github.com/NLPchina/ansj_seg)、[斯坦福NLP](http://stanfordnlp.github.io/CoreNLP/)、[哈工大语言技术平台](https://github.com/HIT-SCIR/ltp)、[中科院分词系统](http://ictclas.nlpir.org/)、[HanLP](https://github.com/hankcs/HanLP) 等)。
 
@@ -74,6 +74,12 @@ String s3 = "苏州是一座美丽的城市，四季分明，雨量充沛。";
 List<String> wordList1 = Segment.getWords(s1);
 List<String> wordList2 = Segment.getWords(s2);
 List<String> wordList3 = Segment.getWords(s3);
+
+//快速句子相似度
+System.out.println("快速句子相似度:");
+System.out.println("s1|s1: " + vec.fastSentenceSimilarity(wordList1, wordList1));
+System.out.println("s1|s2: " + vec.fastSentenceSimilarity(wordList1, wordList2));
+System.out.println("s1|s3: " + vec.fastSentenceSimilarity(wordList1, wordList3));
 
 //句子相似度(所有词语权值设为1)
 System.out.println("s1|s1: " + vec.sentenceSimilarity(wordList1, wordList1));
@@ -92,11 +98,14 @@ System.out.println("s1|s3: " + vec.sentenceSimilarity(wordList1, wordList3, weig
 #### 输出结果：
 
 ```java
+//快速句子相似度
+s1|s1: 1.0000006
+s1|s2: 0.9144124
+s1|s3: 0.6289892
 //句子相似度:
 s1|s1: 1.0
 s1|s2: 0.7888574
 s1|s3: 0.4520114
-  
 //句子相似度(名词、动词权值设为1，其他设为0.8):
 s1|s1: 1.0
 s1|s2: 0.7922064
