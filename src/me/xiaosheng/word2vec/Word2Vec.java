@@ -163,23 +163,23 @@ public class Word2Vec {
         if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
             return 0;
         }
-        float[] vector1 = new float[sentence1Words.size()];
-        float[] vector2 = new float[sentence2Words.size()];
-        for (int i = 0; i < vector1.length; i++) {
-            vector1[i] = calMaxSimilarity(sentence1Words.get(i), sentence2Words);
-        }
-        for (int i = 0; i < vector2.length; i++) {
-            vector2[i] = calMaxSimilarity(sentence2Words.get(i), sentence1Words);
-        }
         float sum1 = 0;
-        for (int i = 0; i < vector1.length; i++) {
-            sum1 += vector1[i];
-        }
         float sum2 = 0;
-        for (int i = 0; i < vector2.length; i++) {
-            sum2 += vector2[i];
+        int count1 = 0;
+        int count2 = 0;
+        for (int i = 0; i < sentence1Words.size(); i++) {
+            if (getWordVector(sentence1Words.get(i)) != null) {
+                count1++;
+                sum1 += calMaxSimilarity(sentence1Words.get(i), sentence2Words);
+            }
         }
-        return (sum1 + sum2) / (sentence1Words.size() + sentence2Words.size());
+        for (int i = 0; i < sentence2Words.size(); i++) {
+            if (getWordVector(sentence2Words.get(i)) != null) {
+                count2++;
+                sum2 += calMaxSimilarity(sentence2Words.get(i), sentence1Words);
+            }
+        }
+        return (sum1 + sum2) / (count1 + count2);
     }
     /**
      * 计算句子相似度(带权值)
@@ -201,29 +201,23 @@ public class Word2Vec {
         if (sentence1Words.size() != weightVector1.length || sentence2Words.size() != weightVector2.length) {
             throw new Exception("length of word list and weight vector is different");
         }
-        float[] vector1 = new float[sentence1Words.size()];
-        float[] vector2 = new float[sentence2Words.size()];
-        for (int i = 0; i < vector1.length; i++) {
-            vector1[i] = calMaxSimilarity(sentence1Words.get(i), sentence2Words);
-        }
-        for (int i = 0; i < vector2.length; i++) {
-            vector2[i] = calMaxSimilarity(sentence2Words.get(i), sentence1Words);
-        }
         float sum1 = 0;
-        for (int i = 0; i < vector1.length; i++) {
-            sum1 += vector1[i] * weightVector1[i];
-        }
         float sum2 = 0;
-        for (int i = 0; i < vector2.length; i++) {
-            sum2 += vector2[i] * weightVector2[i];
-        }
         float divide1 = 0;
-        for (int i = 0; i < weightVector1.length; i++) {
-            divide1 += weightVector1[i];
-        }
         float divide2 = 0;
-        for (int j = 0; j < weightVector2.length; j++) {
-            divide2 += weightVector2[j];
+        for (int i = 0; i < sentence1Words.size(); i++) {
+            if (getWordVector(sentence1Words.get(i)) != null) {
+                float wordMaxSimi = calMaxSimilarity(sentence1Words.get(i), sentence2Words);
+                sum1 += wordMaxSimi * weightVector1[i];
+                divide1 += weightVector1[i];
+            }
+        }
+        for (int i = 0; i < sentence2Words.size(); i++) {
+            if (getWordVector(sentence2Words.get(i)) != null) {
+                float wordMaxSimi = calMaxSimilarity(sentence2Words.get(i), sentence1Words);
+                sum2 += wordMaxSimi * weightVector2[i];
+                divide2 += weightVector2[i];
+            }
         }
         return (sum1 + sum2) / (divide1 + divide2);
     }
