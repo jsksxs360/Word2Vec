@@ -77,6 +77,16 @@ public class Word2Vec {
         return dist;
     }
     /**
+     * 向量求和
+     * @param sum 和向量
+     * @param vec 添加向量
+     */
+    private void calSum(float[] sum, float[] vec) {
+        for (int i = 0; i < sum.length; i++) {
+            sum[i] += vec[i];
+        }
+    }
+    /**
      * 计算词相似度
      * @param word1
      * @param word2
@@ -148,6 +158,37 @@ public class Word2Vec {
         }
         if (max == -1) return 0;
         return max;
+    }
+    /**
+     * 快速计算句子相似度
+     * @param sentence1Words 句子1词语列表
+     * @param sentence2Words 句子2词语列表
+     * @return 两个句子的相似度
+     */
+    public float fastSentenceSimilarity(List<String> sentence1Words, List<String> sentence2Words) {
+        if (loadModel == false) {
+            return 0;
+        }
+        if (sentence1Words.isEmpty() || sentence2Words.isEmpty()) {
+            return 0;
+        }
+        float[] sen1vector = new float[vec.getSize()];
+        float[] sen2vector = new float[vec.getSize()];
+        double len1 = 0;
+        double len2 = 0;
+        for (int i = 0; i < sentence1Words.size(); i++) {
+            float[] tmp = getWordVector(sentence1Words.get(i));
+            if (tmp != null) calSum(sen1vector, tmp);
+        }
+        for (int i = 0; i < sentence2Words.size(); i++) {
+            float[] tmp = getWordVector(sentence2Words.get(i));
+            if (tmp != null) calSum(sen2vector, tmp);
+        }
+        for (int i = 0; i < vec.getSize(); i++) {
+            len1 += sen1vector[i] * sen1vector[i];
+            len2 += sen2vector[i] * sen2vector[i];
+        }
+        return (float) (calDist(sen1vector, sen2vector) / Math.sqrt(len1 * len2));
     }
     /**
      * 计算句子相似度

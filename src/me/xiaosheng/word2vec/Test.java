@@ -40,6 +40,11 @@ public class Test {
         List<String> wordList1 = Segment.getWords(s1);
         List<String> wordList2 = Segment.getWords(s2);
         List<String> wordList3 = Segment.getWords(s3);
+        //快速句子相似度
+        System.out.println("快速句子相似度:");
+        System.out.println("s1|s1: " + vec.fastSentenceSimilarity(wordList1, wordList1));
+        System.out.println("s1|s2: " + vec.fastSentenceSimilarity(wordList1, wordList2));
+        System.out.println("s1|s3: " + vec.fastSentenceSimilarity(wordList1, wordList3));
         //句子相似度(所有词语权值设为1)
         System.out.println("句子相似度:");
         System.out.println("s1|s1: " + vec.sentenceSimilarity(wordList1, wordList1));
