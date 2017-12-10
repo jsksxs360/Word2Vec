@@ -102,10 +102,12 @@ System.out.println("s1|s3: " + vec.sentenceSimilarity(wordList1, wordList3, weig
 s1|s1: 1.0000006
 s1|s2: 0.9144124
 s1|s3: 0.6289892
+
 //句子相似度:
 s1|s1: 1.0
 s1|s2: 0.7888574
 s1|s3: 0.4520114
+
 //句子相似度(名词、动词权值设为1，其他设为0.8):
 s1|s1: 1.0
 s1|s2: 0.7922064
