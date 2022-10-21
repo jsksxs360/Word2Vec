@@ -159,7 +159,7 @@ Google 实现的 C 语言版的 word2vec 是目前公认的准确率最高的 wo
 
 详情请见 [**Word2Vector 模型**](https://github.com/jsksxs360/AHANLP/blob/master/github/w2v.md)，可以下载训练好的 Google 版模型及对应的训练语料。
 
-如果想对最新的维基百科中文语料进行处理，可以参考[《维基百科中文语料库词向量的训练》](http://xiaosheng.run/2017/05/26/article63/)。
+如果想对最新的维基百科中文语料进行处理，可以参考[《维基百科中文语料库词向量的训练：处理维基百科中文语料》](https://xiaosheng.run/2017/05/26/train-word-vector.html)。
 
 ### 4. Python 版本 
 
